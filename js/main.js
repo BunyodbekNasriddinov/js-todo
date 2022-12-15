@@ -45,13 +45,20 @@ var todos = [];
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
-  if (elInput.value === "") return confirm("Ish kiriting!!!");
-
   var obj = {
     id: todos.length + 1,
     task: elInput.value,
   };
 
+  if (elInput.value === "") {
+    elInput.classList.add("border-danger");
+    elInput.classList.add("border-5");
+    return;
+    // return confirm("Ish kiriting!!!");
+  } else {
+    elInput.classList.remove("border-danger");
+  }
+  
   todos.push(obj);
 
   var newTask = document.createElement("li");
@@ -76,9 +83,10 @@ elForm.addEventListener("submit", (evt) => {
     />
     </button></div> `;
 
-  // elRemoveBtn.addEventListener("click", () => {
-  //   elList.removeChild(newTask);
-  // });
-
   elInput.value = "";
+});
+
+elRemoveBtn.addEventListener("click", () => {
+  elList.removeChild(newTask);
+  console.log("delete");
 });

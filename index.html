@@ -19,6 +19,7 @@
             class="js-input form-control"
             type="text"
             placeholder="Todo..."
+            autofocus
           />
           <button class="btn bg-success text-white w-25 ms-3" type="submit">
             Task add
@@ -26,7 +27,7 @@
           <button class="js-record btn btn-primary w-25 ms-3" type="button">
             Record
             <div
-              class="js-spinner  d-none spinner-grow spinner-grow-sm text-danger ms-1"
+              class="js-spinner d-none spinner-grow spinner-grow-sm text-danger ms-1"
               role="status"
             >
               <span class="visually-hidden">Loading...</span>
@@ -42,7 +43,6 @@
         <ol class="js-list list-unstyled list-group mt-5"></ol>
       </form>
     </div>
-    <button class="js-remove visually-hidden" type="button">remove</button>
     <script src="./js/main.js"></script>
   </body>
 </html>

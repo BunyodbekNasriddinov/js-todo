@@ -3,7 +3,7 @@ var elInput = document.querySelector(".js-input");
 var elForm = document.querySelector(".js-form");
 var elList = document.querySelector(".js-list");
 var elRecord = document.querySelector(".js-record");
-var elRemoveBtn = document.querySelector(".js-remove");
+var elRemoveBtn;
 var elSpinner = document.querySelector(".js-spinner");
 var elSelect = document.querySelector(".js-select");
 
@@ -54,15 +54,14 @@ elForm.addEventListener("submit", (evt) => {
     elInput.classList.add("border-danger");
     elInput.classList.add("border-5");
     return;
-    // return confirm("Ish kiriting!!!");
   } else {
     elInput.classList.remove("border-danger");
   }
-  
+
   todos.push(obj);
 
   var newTask = document.createElement("li");
-  elList.appendChild(newTask);
+  elList.append(newTask);
   newTask.classList.add("list-group-item");
   newTask.classList.add("text-success");
   newTask.classList.add("fw-bold");
@@ -84,9 +83,12 @@ elForm.addEventListener("submit", (evt) => {
     </button></div> `;
 
   elInput.value = "";
-});
 
-elRemoveBtn.addEventListener("click", () => {
-  elList.removeChild(newTask);
-  console.log("delete");
+  elRemoveBtn = newTask.querySelectorAll(".js-remove");
+
+  elRemoveBtn.forEach((el) => {
+    el.addEventListener("click", () => {
+      newTask.remove();
+    });
+  });
 });

@@ -73,21 +73,13 @@ function time() {
   return `${hour}:${minutes}`;
 }
 
-todos = JSON.parse(localStorage.getItem("myTodos"));
-
-renderTodo(todos, elList);
-
-elClearAllBtn.addEventListener("click", () => {
-  localStorage.removeItem("myTodos");
-  todos = [];
-
-  renderTodo(todos, elList);
-});
+console.log(todos.length);
 
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
   if (elInput.value != "") {
+    console.log(todos.length);
     const newTodo = {
       id: todos.length > 0 ? todos.length + 1 : 1,
       text: elInput.value,
@@ -114,6 +106,16 @@ elForm.addEventListener("submit", (evt) => {
     elInput.classList.add("btn-outline-danger");
   }
 });
+
+elClearAllBtn.addEventListener("click", () => {
+  localStorage.removeItem("myTodos");
+  todos = [];
+
+  renderTodo(todos, elList);
+});
+
+renderTodo(todos, elList);
+todos = JSON.parse(localStorage.getItem("myTodos"));
 
 elAllTodos.addEventListener("click", () => {
   renderTodo(todos, elList);

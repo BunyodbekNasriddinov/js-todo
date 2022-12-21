@@ -73,8 +73,6 @@ function time() {
   return `${hour}:${minutes}`;
 }
 
-// localStorage.setItem("myTodos", JSON.stringify(todos));
-
 todos = JSON.parse(localStorage.getItem("myTodos"));
 
 renderTodo(todos, elList);
@@ -171,3 +169,5 @@ elList.addEventListener("click", (evt) => {
     localStorage.setItem("myTodos", JSON.stringify(todos));
   }
 });
+
+localStorage.setItem("myTodos", JSON.stringify(todos));

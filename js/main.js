@@ -1,28 +1,61 @@
-var elForm = document.querySelector(".js-form");
-var elInput = document.querySelector(".js-input");
-var elForm = document.querySelector(".js-form");
-var elList = document.querySelector(".js-list");
-var elRecord = document.querySelector(".js-record");
-var elRemoveBtn;
-var elSpinner = document.querySelector(".js-spinner");
-var elSelect = document.querySelector(".js-select");
+const elForm = document.querySelector(".js-form");
+const elInput = document.querySelector(".js-input");
+const elList = document.querySelector(".js-list");
+const elAllTodos = document.querySelector(".js-all-todos");
+const elCompletedTodos = document.querySelector(".js-completed-todos");
+const elUnCompletedTodos = document.querySelector(".js-uncompleted-todos");
+const elClearAllBtn = document.querySelector(".js-clear-all-btn");
 
-var voice = new webkitSpeechRecognition();
+let elAllTodosNum = elAllTodos.children[0];
+let elCompletedTodosNum = elCompletedTodos.children[0];
+let elUnCompletedTodosNum = elUnCompletedTodos.children[0];
 
-elRecord.addEventListener("click", () => {
-  voice.lang = elSelect.value;
+let todos = [];
+let completedTodo;
+let unCompletedTodo = todos;
 
-  voice.start();
+const renderTodo = (array, node) => {
+  node.innerHTML = "";
+  array.forEach((item) => {
+    const newItem = document.createElement("li");
 
-  elSpinner.classList.remove("d-none");
-});
+    const newCheckInput = document.createElement("input");
+    const newSpan = document.createElement("span");
+    const newEditButton = document.createElement("button");
+    const newDeleteButton = document.createElement("button");
+    const newTimeSpan = document.createElement("span");
 
-voice.onend = () => {
-  elSpinner.classList.add("d-none");
-};
+    newItem.appendChild(newCheckInput);
+    newItem.appendChild(newSpan);
+    newItem.appendChild(newEditButton);
+    newItem.appendChild(newDeleteButton);
+    newItem.appendChild(newTimeSpan);
 
-voice.onresult = (evt) => {
-  elInput.value = evt.results[0][0].transcript;
+    newCheckInput.type = "checkbox";
+    newDeleteButton.innerText = "DELETE";
+    newEditButton.innerText = "EDIT";
+    newTimeSpan.innerText = time();
+
+    newItem.setAttribute("class", "list-group-item d-flex align-items-center");
+    newCheckInput.setAttribute("class", "form-check-input m-0 js-check-input");
+    newSpan.setAttribute("class", "ms-3 fs-5");
+    newEditButton.setAttribute("class", "btn btn-warning ms-auto js-edit-btn");
+    newDeleteButton.setAttribute("class", "btn btn-danger ms-2 js-delete-btn");
+    newTimeSpan.setAttribute("class", "ms-1 btn btn-secondary");
+
+    newCheckInput.dataset.todoId = item.id;
+    newEditButton.dataset.todoId = item.id;
+    newDeleteButton.dataset.todoId = item.id;
+
+    if (item.isCompleted) {
+      todos.isCompleted = true;
+      newSpan.style.textDecoration = "line-through";
+      newItem.classList.add("bg-success");
+    }
+
+    newSpan.textContent = `${item.id}. ${item.text}`;
+    node.appendChild(newItem);
+  });
 };
 
 function time() {
@@ -40,55 +73,101 @@ function time() {
   return `${hour}:${minutes}`;
 }
 
-var todos = [];
+// localStorage.setItem("myTodos", JSON.stringify(todos));
+
+todos = JSON.parse(localStorage.getItem("myTodos"));
+
+renderTodo(todos, elList);
+
+elClearAllBtn.addEventListener("click", () => {
+  localStorage.removeItem("myTodos");
+  todos = [];
+
+  renderTodo(todos, elList);
+});
 
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
-  var obj = {
-    id: todos.length + 1,
-    task: elInput.value,
-  };
+  if (elInput.value != "") {
+    const newTodo = {
+      id: todos.length > 0 ? todos.length + 1 : 1,
+      text: elInput.value,
+      isCompleted: false,
+    };
 
-  if (elInput.value === "") {
-    elInput.classList.add("border-danger");
-    elInput.classList.add("border-5");
-    return;
+    elInput.classList.remove("btn-outline-danger");
+    elInput.classList.remove("text-white");
+
+    elInput.value = "";
+    todos.push(newTodo);
+    renderTodo(todos, elList);
+
+    localStorage.setItem("myTodos", JSON.stringify(todos));
+
+    completedTodo = todos.filter((el) => el.isCompleted);
+    unCompletedTodo = todos.filter((el) => !el.isCompleted);
+
+    elAllTodosNum.textContent = `(${todos.length})`;
+    elCompletedTodosNum.textContent = `(${completedTodo.length})`;
+    elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
   } else {
-    elInput.classList.remove("border-danger");
+    elInput.classList.add("text-white");
+    elInput.classList.add("btn-outline-danger");
+  }
+});
+
+elAllTodos.addEventListener("click", () => {
+  renderTodo(todos, elList);
+});
+
+elCompletedTodos.addEventListener("click", () => {
+  renderTodo(completedTodo, elList);
+});
+
+elUnCompletedTodos.addEventListener("click", () => {
+  renderTodo(unCompletedTodo, elList);
+});
+
+elList.addEventListener("click", (evt) => {
+  evt.preventDefault();
+
+  if (evt.target.matches(".js-delete-btn")) {
+    const todoId = +evt.target.dataset.todoId;
+    const findedIndex = todos.findIndex((el) => el.id === todoId);
+    todos.splice(findedIndex, 1);
+    renderTodo(todos, elList);
+    localStorage.setItem("myTodos", JSON.stringify(todos));
   }
 
-  todos.push(obj);
+  if (evt.target.matches(".js-edit-btn")) {
+    const todoId = +evt.target.dataset.todoId;
+    const findedIndex = todos.findIndex((el) => el.id === todoId);
+    const editTodo = prompt("Todo'ni o'zgartiring", todos[findedIndex].text);
 
-  var newTask = document.createElement("li");
-  elList.append(newTask);
-  newTask.classList.add("list-group-item");
-  newTask.classList.add("text-success");
-  newTask.classList.add("fw-bold");
-  newTask.classList.add("fs-5");
-  newTask.classList.add("d-flex");
-  newTask.classList.add("justify-content-between");
-  newTask.classList.add("align-items-center");
+    if (
+      editTodo !== null &&
+      editTodo !== "" &&
+      editTodo === todos[findedIndex].text
+    ) {
+      todos[findedIndex].text = editTodo;
+      renderTodo(todos, elList);
+      localStorage.setItem("myTodos", JSON.stringify(todos));
+    }
+  }
 
-  newTask.innerHTML = `
-  ${obj.id}. ${
-    obj.task
-  } <div><span class="text-primary pt-2">${time()}</span><button class="js-remove btn pt-0" type="button">
-    <img
-    width="20"
-    height="20"
-    src="./images/delete.png"
-    alt="Delete icon"
-    />
-    </button></div> `;
+  if (evt.target.matches(".js-check-input")) {
+    const todoId = +evt.target.dataset.todoId;
+    const findedItem = todos.find((el) => el.id === todoId);
+    findedItem.isCompleted = !findedItem.isCompleted;
 
-  elInput.value = "";
+    completedTodo = todos.filter((el) => el.isCompleted);
+    unCompletedTodo = todos.filter((el) => !el.isCompleted);
 
-  elRemoveBtn = newTask.querySelectorAll(".js-remove");
-
-  elRemoveBtn.forEach((el) => {
-    el.addEventListener("click", () => {
-      newTask.remove();
-    });
-  });
+    elAllTodosNum.textContent = `(${todos.length})`;
+    elCompletedTodosNum.textContent = `(${completedTodo.length})`;
+    elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
+    renderTodo(todos, elList);
+    localStorage.setItem("myTodos", JSON.stringify(todos));
+  }
 });

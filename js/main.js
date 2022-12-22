@@ -158,8 +158,14 @@ elList.addEventListener("click", (evt) => {
     const todoId = +evt.target.dataset.todoId;
     const findedIndex = todos.findIndex((el) => el.id === todoId);
     todos.splice(findedIndex, 1);
-    renderTodo(todos, elList);
     localStorage.setItem("myTodos", JSON.stringify(todos));
+    completedTodo = todos.filter((el) => el.isCompleted);
+    unCompletedTodo = todos.filter((el) => !el.isCompleted);
+
+    elAllTodosNum.textContent = `(${todos.length})`;
+    elCompletedTodosNum.textContent = `(${completedTodo.length})`;
+    elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
+    renderTodo(todos, elList);
   }
 
   if (evt.target.matches(".js-edit-btn")) {

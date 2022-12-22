@@ -21,7 +21,17 @@
             placeholder="Todo qo'shing"
             autofocus
           />
-          <button class="btn btn-primary js-submit-btn">Add</button>
+          <button class="btn btn-primary js-record-btn" type="button">
+            Record
+            <span
+              class="spinner-grow bg-danger spinner-grow-sm d-none js-spinner"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </button>
+          <button class="btn btn-primary js-submit-btn" type="submit">
+            Add
+          </button>
         </div>
       </form>
       <div class="input-group mx-auto my-3 w-50">

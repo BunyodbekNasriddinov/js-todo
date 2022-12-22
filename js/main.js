@@ -1,5 +1,7 @@
 const elForm = document.querySelector(".js-form");
 const elInput = document.querySelector(".js-input");
+const elRecordBtn = document.querySelector(".js-record-btn");
+const elSpinner = document.querySelector(".js-spinner");
 const elList = document.querySelector(".js-list");
 const elAllTodos = document.querySelector(".js-all-todos");
 const elCompletedTodos = document.querySelector(".js-completed-todos");
@@ -73,26 +75,39 @@ function time() {
   return `${hour}:${minutes}`;
 }
 
-console.log(todos.length);
+let voice = new webkitSpeechRecognition();
+
+voice.lang = "uz-UZ";
+
+elRecordBtn.addEventListener("click", (evt) => {
+  elSpinner.classList.remove("d-none");
+  voice.start();
+});
+
+voice.onend = () => {
+  elSpinner.classList.add("d-none");
+};
+
+voice.onresult = (evt) => {
+  elInput.value = evt.results[0][0].transcript;
+};
 
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
   if (elInput.value != "") {
-    console.log(todos.length);
     const newTodo = {
       id: todos.length > 0 ? todos.length + 1 : 1,
       text: elInput.value,
       isCompleted: false,
     };
+    elInput.value = "";
 
     elInput.classList.remove("btn-outline-danger");
     elInput.classList.remove("text-white");
 
-    elInput.value = "";
     todos.push(newTodo);
     renderTodo(todos, elList);
-
     localStorage.setItem("myTodos", JSON.stringify(todos));
 
     completedTodo = todos.filter((el) => el.isCompleted);
@@ -115,7 +130,6 @@ elClearAllBtn.addEventListener("click", () => {
 });
 
 renderTodo(todos, elList);
-todos = JSON.parse(localStorage.getItem("myTodos"));
 
 elAllTodos.addEventListener("click", () => {
   renderTodo(todos, elList);
@@ -171,5 +185,3 @@ elList.addEventListener("click", (evt) => {
     localStorage.setItem("myTodos", JSON.stringify(todos));
   }
 });
-
-localStorage.setItem("myTodos", JSON.stringify(todos));

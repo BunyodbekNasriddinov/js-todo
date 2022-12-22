@@ -170,7 +170,7 @@ elList.addEventListener("click", (evt) => {
     if (
       editTodo !== null &&
       editTodo !== "" &&
-      editTodo === todos[findedIndex].text
+      editTodo !== todos[findedIndex].text
     ) {
       todos[findedIndex].text = editTodo;
       renderTodo(todos, elList);
@@ -189,6 +189,7 @@ elList.addEventListener("click", (evt) => {
     elAllTodosNum.textContent = `(${todos.length})`;
     elCompletedTodosNum.textContent = `(${completedTodo.length})`;
     elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
+
     renderTodo(todos, elList);
     localStorage.setItem("myTodos", JSON.stringify(todos));
   }

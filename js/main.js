@@ -116,13 +116,13 @@ elForm.addEventListener("submit", (evt) => {
     elAllTodosNum.textContent = `(${todos.length})`;
     elCompletedTodosNum.textContent = `(${completedTodo.length})`;
     elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
+
+    todos = JSON.parse(localStorage.getItem("myTodos"));
   } else {
     elInput.classList.add("text-white");
     elInput.classList.add("btn-outline-danger");
   }
 });
-
-todos = JSON.parse(localStorage.getItem("myTodos"));
 
 elClearAllBtn.addEventListener("click", () => {
   completedTodo = todos.filter((el) => el.isCompleted);

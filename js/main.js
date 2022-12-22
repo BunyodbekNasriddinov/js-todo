@@ -122,10 +122,18 @@ elForm.addEventListener("submit", (evt) => {
   }
 });
 
-elClearAllBtn.addEventListener("click", () => {
-  localStorage.removeItem("myTodos");
-  todos = [];
+todos = JSON.parse(localStorage.getItem("myTodos"));
 
+elClearAllBtn.addEventListener("click", () => {
+  completedTodo = todos.filter((el) => el.isCompleted);
+  unCompletedTodo = todos.filter((el) => !el.isCompleted);
+
+  elAllTodosNum.textContent = `(${todos.length})`;
+  elCompletedTodosNum.textContent = `(${completedTodo.length})`;
+  elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
+
+  localStorage.setItem("myTodos", todos);
+  todos = [];
   renderTodo(todos, elList);
 });
 

@@ -7,14 +7,39 @@ const elAllTodos = document.querySelector(".js-all-todos");
 const elCompletedTodos = document.querySelector(".js-completed-todos");
 const elUnCompletedTodos = document.querySelector(".js-uncompleted-todos");
 const elClearAllBtn = document.querySelector(".js-clear-all-btn");
+const elModeBtn = document.querySelector(".js-mode");
 
 let elAllTodosNum = elAllTodos.children[0];
 let elCompletedTodosNum = elCompletedTodos.children[0];
 let elUnCompletedTodosNum = elUnCompletedTodos.children[0];
 
-let todos = [];
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
 let completedTodo;
 let unCompletedTodo = todos;
+
+let theme = false;
+
+elModeBtn.addEventListener("click", () => {
+  theme = !theme;
+  const bg = theme ? "dark" : "light";
+  localStorage.setItem("theme", bg);
+  changeTheme();
+});
+
+changeTheme();
+
+function changeTheme() {
+  if (localStorage.getItem("theme") === "dark") {
+    document.querySelector("body").classList.add("dark");
+  } else {
+    document.querySelector("body").classList.remove("dark");
+  }
+  if (theme) {
+    elModeBtn.children[0].src = "./images/mode-icon-dark.png";
+  } else {
+    elModeBtn.children[0].src = "./images/mode-icon.png";
+  }
+}
 
 const renderTodo = (array, node) => {
   node.innerHTML = "";
@@ -57,6 +82,7 @@ const renderTodo = (array, node) => {
 
     newSpan.textContent = `${item.id}. ${item.text}`;
     node.appendChild(newItem);
+    localStorage.setItem("todos", JSON.stringify(todos));
   });
 };
 
@@ -125,16 +151,15 @@ elForm.addEventListener("submit", (evt) => {
 });
 
 elClearAllBtn.addEventListener("click", () => {
+  localStorage.setItem("myTodos", todos);
+  todos = [];
+  renderTodo(todos, elList);
   completedTodo = todos.filter((el) => el.isCompleted);
   unCompletedTodo = todos.filter((el) => !el.isCompleted);
 
   elAllTodosNum.textContent = `(${todos.length})`;
   elCompletedTodosNum.textContent = `(${completedTodo.length})`;
   elUnCompletedTodosNum.textContent = `(${unCompletedTodo.length})`;
-
-  localStorage.setItem("myTodos", todos);
-  todos = [];
-  renderTodo(todos, elList);
 });
 
 renderTodo(todos, elList);
